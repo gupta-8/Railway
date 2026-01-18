@@ -1,0 +1,27 @@
+[project]
+name = "railway-quest"
+version = "0.3.0"
+description = "FastAPI backend simulating a railway system with routing, trips, and bookings."
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.6",
+  "pydantic>=2.9.2",
+  "SQLAlchemy>=2.0.35",
+  "alembic>=1.13.2",
+  "psycopg[binary]>=3.2.3",
+  "python-dotenv>=1.0.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
