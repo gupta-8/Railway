@@ -8,23 +8,6 @@ and ticket booking functionality. It is suitable for learning, interviews, and p
 
 ---
 
-## Table of Contents
-
-- Project Overview  
-- Features  
-- Architecture  
-- Project Structure  
-- Tech Stack  
-- Installation & Setup  
-- How to Use  
-- API Reference  
-- Configuration  
-- Testing  
-- Future Improvements  
-- Author  
-
----
-
 ## Project Overview
 
 Railway Quest models a railway network as a weighted graph.
