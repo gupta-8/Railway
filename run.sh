@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-VENV_DIR=".venv"
-PYTHON_BIN="python3"
+VENV_DIR="${VENV_DIR:-.venv}"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+HOST="${HOST:-0.0.0.0}"
+PORT="${PORT:-8000}"
+RELOAD="${RELOAD:-1}"          # 1=dev (reload), 0=prod-like (no reload)
+APP_MODULE="${APP_MODULE:-app.main:app}"
 
-# Create virtual environment only if it doesn't exist
+# Create venv only if missing
 if [ ! -d "$VENV_DIR" ]; then
-  echo "Creating virtual environment..."
-  $PYTHON_BIN -m venv $VENV_DIR
+  echo "Creating virtual environment in $VENV_DIR..."
+  "$PYTHON_BIN" -m venv "$VENV_DIR"
 fi
 
-# Activate virtual environment
+# Activate venv
+# shellcheck disable=SC1090
 source "$VENV_DIR/bin/activate"
 
-# Upgrade pip and install dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
+# Install deps (idempotent; fast when already satisfied)
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 
-# Reload toggle (default: enabled for dev)
-RELOAD_FLAG=""
-if [ "${RELOAD:-1}" = "1" ]; then
-  RELOAD_FLAG="--reload"
+# Build uvicorn args
+UVICORN_ARGS=( "$APP_MODULE" --host "$HOST" --port "$PORT" )
+if [ "$RELOAD" = "1" ]; then
+  UVICORN_ARGS+=( --reload )
 fi
 
-echo "Starting FastAPI server..."
-uvicorn app.main:app --host 0.0.0.0 --port 8000 $RELOAD_FLAG
+echo "Starting server: uvicorn ${UVICORN_ARGS[*]}"
+exec uvicorn "${UVICORN_ARGS[@]}"
